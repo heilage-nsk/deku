@@ -31,11 +31,24 @@ export function createApp (container, handler = noop, options = {}) {
       }else{
         let {DOMnode, attachEvents} = dom.createElementThenEvents(vnode, rootId, dispatch, context)
         let isRenderedCorrectly = true
-        if(container.attributes.checksum){
-          isRenderedCorrectly = container.attributes.checksum ===  adler32(DOMnode.outerHTML)
-        }else if(container.attributes.autoFix){
+
+/*
+ * TODO: пропатчить либу, чтобы были минимально возможные изменения при восстановлении из html.
+ *
+ * Сейчас при несовпадении html (даже если несовпадение _только_ в дочерних нодах) - ререндерится вообще ВСЁ. Это не то, что нам бы хотелось.
+ * Идеи:
+ * - Создать из текущего html дерево native-vnode и сравнить диффом со сгенерированным из клиентских компонентов.
+ *   После чего просто пройтись диффом! Кажется, тут могут всплыть подводные камеи: как понять, куда монтируется компонентная нода?
+ * - При создании каждой компонентной ноды проверять наличие аналогичной в дереве и применять дифф.
+ *   Разобраться, как создаются нативные ноды из компонентных!
+ */
+
+    //    if(container.attributes.checksum){
+    //      isRenderedCorrectly = container.attributes.checksum ===  adler32(DOMnode.outerHTML)
+    //    }else if(container.attributes.autoFix){
           isRenderedCorrectly = container.innerHTML ===  DOMnode.outerHTML
-        }
+          console.log(container.innerHTML, DOMnode.outerHTML);
+    //    }
 
         node = DOMnode
         if(isRenderedCorrectly){

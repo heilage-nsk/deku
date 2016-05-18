@@ -322,8 +322,40 @@ test('rendering in a container with pre-rendered HTML', t => {
     '<p>Nyan!</p>',
     'destory and re-rendered due to checksum inequivalence'
   )
+
   t.end()
 })
+
+test.only('rerendering custom element with changing props', t => {
+  let el = document.createElement('div')
+  const Comp = {
+    render({props}) {
+      return (
+        <span data-id={props.dataid}>woot</span>
+      );
+    }
+  }
+
+  let render = createApp(el);
+
+  el.innerHTML = '<div><span data-id="100">woot</span></div>';
+  el.children[0].attributes.chck = 1;
+
+  render(<div><Comp dataid="200" /></div>);
+
+  t.equal(
+    el.children[0].attributes.chck,
+    1,
+    'should not rerender outer div'
+  )
+  t.equal(
+    el.innerHTML,
+    '<div><span data-id="200">woot</span></div>',
+    'attributes should be updated when needed'
+  )
+
+  t.end();
+});
 
 test('rendering in a container with pre-rendered HTML and click events', t => {
   t.plan(12)
