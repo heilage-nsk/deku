@@ -2,7 +2,6 @@ import * as dom from '../dom'
 import {diffNode} from '../diff'
 import empty from '@f/empty-element'
 import noop from '@f/noop'
-import {str as adler32} from 'adler-32'
 
 /**
  * Create a DOM renderer using a container element. Everything will be rendered
