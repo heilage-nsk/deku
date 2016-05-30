@@ -2,7 +2,7 @@ import {setAttribute, removeAttribute} from './setAttribute'
 import {isThunk, createPath} from '../element'
 import {Actions, diffNode} from '../diff'
 import reduceArray from '@f/reduce-array'
-import {createElement} from './create'
+import createElement from './create'
 import toArray from '@f/to-array'
 import forEach from '@f/foreach'
 import noop from '@f/noop'
@@ -11,7 +11,7 @@ import noop from '@f/noop'
  * Modify a DOM element given an array of actions.
  */
 
-export function updateElement (dispatch, context) {
+export default function updateElement (dispatch, context) {
   return (DOMElement, action) => {
     Actions.case({
       sameNode: noop,
@@ -88,7 +88,7 @@ function updateThunk (DOMElement, prev, next, path, dispatch, context) {
     context
   }
   let nextNode = next.fn(model)
-  let changes = diffNode(prevNode, nextNode, createPath(path, '0'))
+  let changes = diffNode(prevNode, nextNode, path)
   DOMElement = reduceArray(updateElement(dispatch, context), DOMElement, changes)
   if (onUpdate) dispatch(onUpdate(model))
   next.state = {
