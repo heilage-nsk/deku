@@ -167,18 +167,12 @@ function createHTMLElement (vnode, path, dispatch, context, {originNode}) {
  * @returns {Function}
  */
 function nodesUpdater(parentNode, path, dispatch, context) {
-  // TODO: possible performance cut
-  const nodeIterator = (function* () {
-    for (let i = 0; i < parentNode.childNodes.length; i++) {
-      yield parentNode.childNodes[i]
-    }
-    return null
-  })()
+  let i = 0
 
   return (node, index, sideEffects) => {
     if (isNull(node) || isUndefined(node)) return
 
-    const originNode = nodeIterator.next().value
+    const originNode = parentNode.childNodes[i++] || null
     const DOM = createWithSideEffects(
       node,
       createPath(path, node.key || index),
