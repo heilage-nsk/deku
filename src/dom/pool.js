@@ -4,18 +4,25 @@ export default class Pool {
     }
 
     store(el) {
-        let tagName = el.tagName.toLowerCase();
-        if (!this.storage[tagName]) {
-            this.storage[tagName] = [];
-        }
-
-        if (el.parentNode) {
+        if (el && el.parentNode) {
             el.parentNode.removeChild(el);
         }
 
+        if (!el.nodeType || el.nodeType != Node.ELEMENT_NODE) {
+            return
+        }
+        
+        let tagName = el.tagName.toLowerCase()
+        if (!this.storage[tagName]) {
+            this.storage[tagName] = []
+        }
+
+        // little cleanup
+        for (let i = 0; i < el.attributes.length; i++) {
+            el.removeAttribute(el.attributes[i].name)
+        }
         if (el.childNodes.length > 0) {
-            console.error(`Node pool warning: Storing <${tagName}> with ${el.childNodes.length} children. 
-                          This shouldn't happen: do not store nodes with children!`);
+            // console.error(`Node pool warning: Storing <${tagName}> with ${el.childNodes.length} children. This shouldn't happen: do not store nodes with children!`);
             for (let i=el.childNodes.length; i--; ) {
                 this.store(el.childNodes[i]);
             }
